@@ -1,11 +1,16 @@
 package br.com.mvclopes.formvalidationcompose.viewModel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import br.com.mvclopes.formvalidationcompose.state.AuthenticationEvent
 import br.com.mvclopes.formvalidationcompose.state.AuthenticationMode
 import br.com.mvclopes.formvalidationcompose.state.AuthenticationState
 import br.com.mvclopes.formvalidationcompose.state.PasswordRequirements
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class AuthenticationViewModel: ViewModel() {
     val uiState = MutableStateFlow(AuthenticationState())
@@ -15,6 +20,8 @@ class AuthenticationViewModel: ViewModel() {
             is AuthenticationEvent.ToggleAuthenticationMode -> toggleAuthenticationMode()
             is AuthenticationEvent.EmailChanged -> updateEmail(authenticationEvent.email)
             is AuthenticationEvent.PasswordChanged -> updatePassword(authenticationEvent.password)
+            is AuthenticationEvent.Authenticate -> authenticate()
+            is AuthenticationEvent.ErrorDismissed -> dismissError()
         }
     }
 
@@ -49,4 +56,20 @@ class AuthenticationViewModel: ViewModel() {
         )
     }
 
+    private fun authenticate() {
+        uiState.value = uiState.value.copy(isLoading = true)
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(2000L)
+            withContext(Dispatchers.Main) {
+                uiState.value = uiState.value.copy(
+                    isLoading = true,
+                    error = "Something went wrong!"
+                )
+            }
+        }
+    }
+
+    private fun dismissError() {
+        uiState.value = uiState.value.copy(error = null)
+    }
 }
