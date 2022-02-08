@@ -5,4 +5,8 @@
     <string name="password_requirements_characters">At least 8 characters</string>
     <string name="password_requirements_digit">At least 1 digit</string>
     <string name="password_requirements_capital">At least 1 upper-case letter</string>
+
+    <!-- Authentication Form -->
+    <string name="label_sign_in_to_account">Sign in to your account</string>
+    <string name="label_sign_up_for_account">Sign up for an account</string>
 </resources>
